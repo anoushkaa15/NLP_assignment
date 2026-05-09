@@ -1,1 +1,2 @@
-# No third-party packages are required. The agent uses Python's standard library.
+requests>=2.31.0
+python-dotenv>=1.0.0

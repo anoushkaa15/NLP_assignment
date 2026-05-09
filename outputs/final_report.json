@@ -1,0 +1,419 @@
+{
+  "user_input": "Viral posts claim that NASA announced Earth will experience six days of total darkness next month because of a solar storm.\n",
+  "claims": {
+    "main_claim": "NASA announced Earth will experience six days of total darkness next month because of a solar storm.",
+    "sub_claims": [
+      "NASA announced an upcoming six-day period of total darkness on Earth.",
+      "A solar storm will cause global darkness next month."
+    ],
+    "entities": [
+      "NASA",
+      "Earth",
+      "solar storm"
+    ],
+    "topics": [
+      "science",
+      "space",
+      "misinformation"
+    ],
+    "claim_type": "social media claim"
+  },
+  "evidence": [
+    {
+      "title": "NASA did not warn of six days of darkness",
+      "snippet": "Fact-checkers report that viral posts about six days of darkness are a recurring hoax and not a NASA announcement.",
+      "url": "https://example.com/fact-check-nasa-darkness",
+      "source": "Example Fact Check"
+    },
+    {
+      "title": "Solar storms do not cause global multi-day darkness",
+      "snippet": "Space weather can disrupt communications and power systems, but it does not block sunlight worldwide for days.",
+      "url": "https://example.com/space-weather-explainer",
+      "source": "Example Science Desk"
+    },
+    {
+      "title": "NASA official updates show no global darkness announcement",
+      "snippet": "Recent NASA updates discuss solar activity but contain no warning about total darkness on Earth.",
+      "url": "https://example.com/nasa-updates",
+      "source": "Example NASA Monitor"
+    },
+    {
+      "title": "Old viral darkness claim returns on social media",
+      "snippet": "The same claim has circulated in previous years with changing dates and no supporting evidence.",
+      "url": "https://example.com/viral-hoax-history",
+      "source": "Example News"
+    },
+    {
+      "title": "How to verify viral space claims",
+      "snippet": "Experts recommend checking official agency releases and multiple reputable science outlets before sharing viral claims.",
+      "url": "https://example.com/verify-space-claims",
+      "source": "Example Media Literacy"
+    }
+  ],
+  "evidence_quality": {
+    "requested_results": 5,
+    "retrieved_results": 5,
+    "queries": [
+      "mock query"
+    ],
+    "status": "ok",
+    "errors": []
+  },
+  "analysis": {
+    "supported_claims": [],
+    "contradicted_claims": [
+      "NASA announced Earth will experience six days of total darkness next month because of a solar storm."
+    ],
+    "uncertain_claims": [
+      "Whether a specific viral post used altered NASA branding is not verifiable from snippets alone."
+    ],
+    "reasoning": [
+      "Retrieved fact-check and science-source snippets describe the six-days-of-darkness claim as a recurring hoax.",
+      "No evidence item reports an actual NASA announcement matching the claim."
+    ]
+  },
+  "credibility": {
+    "credibility_score": 12,
+    "confidence_level": "medium",
+    "misinformation_risk": "high",
+    "justification": [
+      "The central claim is contradicted by retrieved fact-checking evidence.",
+      "Search results do not show a NASA announcement supporting the claim.",
+      "Confidence is medium because mock evidence is snippet-level rather than full article text."
+    ]
+  },
+  "final_report": "# Fake News Verification Report\n\n## 1. Original Claim\nViral posts claim that NASA announced Earth will experience six days of total darkness next month because of a solar storm.\n\n## 2. Extracted Factual Claims\n- NASA allegedly announced a six-day global darkness event.\n- A solar storm allegedly will cause this event next month.\n\n## 3. Evidence Summary\nThe retrieved evidence does not support the alleged NASA announcement. The available snippets describe similar claims as recurring misinformation or hoaxes.\n\n## 4. Supported vs. Contradicted Points\n- **Supported:** None of the main factual claims were supported by retrieved evidence.\n- **Contradicted:** The central claim is contradicted by fact-check style evidence and lack of corroborating NASA reporting.\n- **Uncertain:** Snippet-level search cannot verify every version of the viral post.\n\n## 5. Credibility Score\n**12 / 100**\n\n## 6. Confidence Level\n**Medium**\n\n## 7. Final Verdict\nThe claim is very likely false. Based on the retrieved evidence, it resembles a known misinformation pattern rather than a real NASA announcement.\n\n## 8. Limitations of Verification\nThis result depends on search snippets and available sources. A stronger version would fetch and analyze full article text and check NASA's official website directly.\n",
+  "errors": [],
+  "trace": [
+    {
+      "step": "STEP 1 - CLAIM EXTRACTION (LLM)",
+      "input_keys": [
+        "user_input"
+      ],
+      "output_keys": [
+        "claims"
+      ],
+      "inputs": {
+        "user_input": "Viral posts claim that NASA announced Earth will experience six days of total darkness next month because of a solar storm.\n"
+      },
+      "outputs": {
+        "claims": {
+          "main_claim": "NASA announced Earth will experience six days of total darkness next month because of a solar storm.",
+          "sub_claims": [
+            "NASA announced an upcoming six-day period of total darkness on Earth.",
+            "A solar storm will cause global darkness next month."
+          ],
+          "entities": [
+            "NASA",
+            "Earth",
+            "solar storm"
+          ],
+          "topics": [
+            "science",
+            "space",
+            "misinformation"
+          ],
+          "claim_type": "social media claim"
+        }
+      }
+    },
+    {
+      "step": "STEP 2 - WEB EVIDENCE RETRIEVAL (TOOL)",
+      "input_keys": [
+        "claims"
+      ],
+      "output_keys": [
+        "evidence",
+        "evidence_quality"
+      ],
+      "inputs": {
+        "claims": {
+          "main_claim": "NASA announced Earth will experience six days of total darkness next month because of a solar storm.",
+          "sub_claims": [
+            "NASA announced an upcoming six-day period of total darkness on Earth.",
+            "A solar storm will cause global darkness next month."
+          ],
+          "entities": [
+            "NASA",
+            "Earth",
+            "solar storm"
+          ],
+          "topics": [
+            "science",
+            "space",
+            "misinformation"
+          ],
+          "claim_type": "social media claim"
+        }
+      },
+      "outputs": {
+        "evidence": [
+          {
+            "title": "NASA did not warn of six days of darkness",
+            "snippet": "Fact-checkers report that viral posts about six days of darkness are a recurring hoax and not a NASA announcement.",
+            "url": "https://example.com/fact-check-nasa-darkness",
+            "source": "Example Fact Check"
+          },
+          {
+            "title": "Solar storms do not cause global multi-day darkness",
+            "snippet": "Space weather can disrupt communications and power systems, but it does not block sunlight worldwide for days.",
+            "url": "https://example.com/space-weather-explainer",
+            "source": "Example Science Desk"
+          },
+          {
+            "title": "NASA official updates show no global darkness announcement",
+            "snippet": "Recent NASA updates discuss solar activity but contain no warning about total darkness on Earth.",
+            "url": "https://example.com/nasa-updates",
+            "source": "Example NASA Monitor"
+          },
+          {
+            "title": "Old viral darkness claim returns on social media",
+            "snippet": "The same claim has circulated in previous years with changing dates and no supporting evidence.",
+            "url": "https://example.com/viral-hoax-history",
+            "source": "Example News"
+          },
+          {
+            "title": "How to verify viral space claims",
+            "snippet": "Experts recommend checking official agency releases and multiple reputable science outlets before sharing viral claims.",
+            "url": "https://example.com/verify-space-claims",
+            "source": "Example Media Literacy"
+          }
+        ],
+        "evidence_quality": {
+          "requested_results": 5,
+          "retrieved_results": 5,
+          "queries": [
+            "mock query"
+          ],
+          "status": "ok",
+          "errors": []
+        }
+      }
+    },
+    {
+      "step": "STEP 3 - EVIDENCE ANALYSIS (LLM)",
+      "input_keys": [
+        "claims",
+        "evidence"
+      ],
+      "output_keys": [
+        "analysis"
+      ],
+      "inputs": {
+        "claims": {
+          "main_claim": "NASA announced Earth will experience six days of total darkness next month because of a solar storm.",
+          "sub_claims": [
+            "NASA announced an upcoming six-day period of total darkness on Earth.",
+            "A solar storm will cause global darkness next month."
+          ],
+          "entities": [
+            "NASA",
+            "Earth",
+            "solar storm"
+          ],
+          "topics": [
+            "science",
+            "space",
+            "misinformation"
+          ],
+          "claim_type": "social media claim"
+        },
+        "evidence": [
+          {
+            "title": "NASA did not warn of six days of darkness",
+            "snippet": "Fact-checkers report that viral posts about six days of darkness are a recurring hoax and not a NASA announcement.",
+            "url": "https://example.com/fact-check-nasa-darkness",
+            "source": "Example Fact Check"
+          },
+          {
+            "title": "Solar storms do not cause global multi-day darkness",
+            "snippet": "Space weather can disrupt communications and power systems, but it does not block sunlight worldwide for days.",
+            "url": "https://example.com/space-weather-explainer",
+            "source": "Example Science Desk"
+          },
+          {
+            "title": "NASA official updates show no global darkness announcement",
+            "snippet": "Recent NASA updates discuss solar activity but contain no warning about total darkness on Earth.",
+            "url": "https://example.com/nasa-updates",
+            "source": "Example NASA Monitor"
+          },
+          {
+            "title": "Old viral darkness claim returns on social media",
+            "snippet": "The same claim has circulated in previous years with changing dates and no supporting evidence.",
+            "url": "https://example.com/viral-hoax-history",
+            "source": "Example News"
+          },
+          {
+            "title": "How to verify viral space claims",
+            "snippet": "Experts recommend checking official agency releases and multiple reputable science outlets before sharing viral claims.",
+            "url": "https://example.com/verify-space-claims",
+            "source": "Example Media Literacy"
+          }
+        ]
+      },
+      "outputs": {
+        "analysis": {
+          "supported_claims": [],
+          "contradicted_claims": [
+            "NASA announced Earth will experience six days of total darkness next month because of a solar storm."
+          ],
+          "uncertain_claims": [
+            "Whether a specific viral post used altered NASA branding is not verifiable from snippets alone."
+          ],
+          "reasoning": [
+            "Retrieved fact-check and science-source snippets describe the six-days-of-darkness claim as a recurring hoax.",
+            "No evidence item reports an actual NASA announcement matching the claim."
+          ]
+        }
+      }
+    },
+    {
+      "step": "STEP 4 - CREDIBILITY SCORING (LLM)",
+      "input_keys": [
+        "analysis",
+        "evidence_quality"
+      ],
+      "output_keys": [
+        "credibility"
+      ],
+      "inputs": {
+        "analysis": {
+          "supported_claims": [],
+          "contradicted_claims": [
+            "NASA announced Earth will experience six days of total darkness next month because of a solar storm."
+          ],
+          "uncertain_claims": [
+            "Whether a specific viral post used altered NASA branding is not verifiable from snippets alone."
+          ],
+          "reasoning": [
+            "Retrieved fact-check and science-source snippets describe the six-days-of-darkness claim as a recurring hoax.",
+            "No evidence item reports an actual NASA announcement matching the claim."
+          ]
+        },
+        "evidence_quality": {
+          "requested_results": 5,
+          "retrieved_results": 5,
+          "queries": [
+            "mock query"
+          ],
+          "status": "ok",
+          "errors": []
+        }
+      },
+      "outputs": {
+        "credibility": {
+          "credibility_score": 12,
+          "confidence_level": "medium",
+          "misinformation_risk": "high",
+          "justification": [
+            "The central claim is contradicted by retrieved fact-checking evidence.",
+            "Search results do not show a NASA announcement supporting the claim.",
+            "Confidence is medium because mock evidence is snippet-level rather than full article text."
+          ]
+        }
+      }
+    },
+    {
+      "step": "STEP 5 - FINAL FACT-CHECK REPORT (LLM)",
+      "input_keys": [
+        "analysis",
+        "claims",
+        "credibility",
+        "evidence",
+        "evidence_quality",
+        "user_input"
+      ],
+      "output_keys": [
+        "final_report"
+      ],
+      "inputs": {
+        "user_input": "Viral posts claim that NASA announced Earth will experience six days of total darkness next month because of a solar storm.\n",
+        "claims": {
+          "main_claim": "NASA announced Earth will experience six days of total darkness next month because of a solar storm.",
+          "sub_claims": [
+            "NASA announced an upcoming six-day period of total darkness on Earth.",
+            "A solar storm will cause global darkness next month."
+          ],
+          "entities": [
+            "NASA",
+            "Earth",
+            "solar storm"
+          ],
+          "topics": [
+            "science",
+            "space",
+            "misinformation"
+          ],
+          "claim_type": "social media claim"
+        },
+        "evidence": [
+          {
+            "title": "NASA did not warn of six days of darkness",
+            "snippet": "Fact-checkers report that viral posts about six days of darkness are a recurring hoax and not a NASA announcement.",
+            "url": "https://example.com/fact-check-nasa-darkness",
+            "source": "Example Fact Check"
+          },
+          {
+            "title": "Solar storms do not cause global multi-day darkness",
+            "snippet": "Space weather can disrupt communications and power systems, but it does not block sunlight worldwide for days.",
+            "url": "https://example.com/space-weather-explainer",
+            "source": "Example Science Desk"
+          },
+          {
+            "title": "NASA official updates show no global darkness announcement",
+            "snippet": "Recent NASA updates discuss solar activity but contain no warning about total darkness on Earth.",
+            "url": "https://example.com/nasa-updates",
+            "source": "Example NASA Monitor"
+          },
+          {
+            "title": "Old viral darkness claim returns on social media",
+            "snippet": "The same claim has circulated in previous years with changing dates and no supporting evidence.",
+            "url": "https://example.com/viral-hoax-history",
+            "source": "Example News"
+          },
+          {
+            "title": "How to verify viral space claims",
+            "snippet": "Experts recommend checking official agency releases and multiple reputable science outlets before sharing viral claims.",
+            "url": "https://example.com/verify-space-claims",
+            "source": "Example Media Literacy"
+          }
+        ],
+        "analysis": {
+          "supported_claims": [],
+          "contradicted_claims": [
+            "NASA announced Earth will experience six days of total darkness next month because of a solar storm."
+          ],
+          "uncertain_claims": [
+            "Whether a specific viral post used altered NASA branding is not verifiable from snippets alone."
+          ],
+          "reasoning": [
+            "Retrieved fact-check and science-source snippets describe the six-days-of-darkness claim as a recurring hoax.",
+            "No evidence item reports an actual NASA announcement matching the claim."
+          ]
+        },
+        "credibility": {
+          "credibility_score": 12,
+          "confidence_level": "medium",
+          "misinformation_risk": "high",
+          "justification": [
+            "The central claim is contradicted by retrieved fact-checking evidence.",
+            "Search results do not show a NASA announcement supporting the claim.",
+            "Confidence is medium because mock evidence is snippet-level rather than full article text."
+          ]
+        },
+        "evidence_quality": {
+          "requested_results": 5,
+          "retrieved_results": 5,
+          "queries": [
+            "mock query"
+          ],
+          "status": "ok",
+          "errors": []
+        }
+      },
+      "outputs": {
+        "final_report": "# Fake News Verification Report\n\n## 1. Original Claim\nViral posts claim that NASA announced Earth will experience six days of total darkness next month because of a solar storm.\n\n## 2. Extracted Factual Claims\n- NASA allegedly announced a six-day global darkness event.\n- A solar storm allegedly will cause this event next month.\n\n## 3. Evidence Summary\nThe retrieved evidence does not support the alleged NASA announcement. The available snippets describe similar claims as recurring misinformation or hoaxes.\n\n## 4. Supported vs. Contradicted Points\n- **Supported:** None of the main factual claims were supported by retrieved evidence.\n- **Contradicted:** The central claim is contradicted by fact-check style evidence and lack of corroborating NASA reporting.\n- **Uncertain:** Snippet-level search cannot verify every version of the viral post.\n\n## 5. Credibility Score\n**12 / 100**\n\n## 6. Confidence Level\n**Medium**\n\n## 7. Final Verdict\nThe claim is very likely false. Based on the retrieved evidence, it resembles a known misinformation pattern rather than a real NASA announcement.\n\n## 8. Limitations of Verification\nThis result depends on search snippets and available sources. A stronger version would fetch and analyze full article text and check NASA's official website directly.\n"
+      }
+    }
+  ]
+}

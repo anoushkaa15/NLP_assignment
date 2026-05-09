@@ -1,136 +1,172 @@
-# Written Report and Prompt Design Appendix
+# Fake News Verification Agent: Written Report, Prompt Design, and Demo Notes
 
-## Written report
+## Written Report
 
-The agent solves a practical travel-planning problem: it converts a rough natural-language trip request into a weather-aware itinerary brief. This task benefits from multi-step chaining because the answer depends on several different kinds of reasoning that should not be mixed together. First, the system must identify factual planning variables such as destination, dates, interests, pace, and constraints. Second, it must retrieve external weather data instead of asking the LLM to guess. Third, it must interpret those conditions in relation to the traveler’s goals. Fourth, it must draft a plan, critique whether that plan actually obeys the earlier constraints, and then revise the result into a usable report. A single prompt could produce a nice-looking itinerary, but it would be harder to inspect, more likely to hallucinate weather, and less useful during a demo because there would be no clear intermediate artifacts to explain.
+### Problem Statement
 
-The chain has six steps, five of which are Grok LLM calls. Step 1 receives only the raw user request and returns a structured JSON parse with destination, dates, travelers, budget, pace, interests, constraints, missing information, and confidence. This step is separate because the tool cannot safely run until the destination and dates are available in predictable fields. Step 2 is the external tool call. It receives the parsed request, geocodes the destination with Open-Meteo, and then requests forecast or historical daily weather rows when exact dates are present. It writes a structured `weather` object into shared state, including a status field so later steps can distinguish real data from unavailable data. Step 3 receives the parsed request and weather object and returns a planning analysis: assumptions, risks, opportunities, packing advice, daily strategy, and uncertainties. This is separate from drafting because it forces the model to reason about conditions before it starts producing attractive itinerary text. Step 4 receives the parsed request and condition analysis and returns a day-by-day itinerary draft in JSON. Step 5 receives the draft plus earlier constraints and produces a critique with required revisions. Step 6 receives the accumulated state and produces the final Markdown report, using the critique as explicit revision instructions.
+The project I built is a Fake News Verification Agent. It accepts a headline, social media post, article excerpt, or short claim and produces a structured fact-check report. Fake news verification is a good task for multi-step chaining because it is not just a writing problem. A system first has to understand what factual claim is being made, then gather external evidence, then compare the claim with that evidence, then decide how credible the claim is, and finally communicate the result in a careful way. If all of this is done in one prompt, the model may skip steps, use its memory as if it were live evidence, or produce a confident answer even when the evidence is weak. Chaining makes the process easier to inspect because every stage leaves behind an intermediate output.
 
-The external tool is Open-Meteo, specifically its geocoding and weather APIs. I chose it because it is free, does not require another API key, and returns structured data that can be passed directly into a later prompt. Its output enters the chain through the shared `state["weather"]` object. If the tool fails, finds no location, or cannot parse the response, it returns `status: "unavailable"` and a reason instead of crashing. Step 3’s prompt then instructs the LLM to mark weather-specific recommendations as uncertain rather than inventing facts. This failure behavior is important for the live demo question about what happens when the tool call returns nothing.
+### Chain Design
 
-The chain has several limitations. It does not book tickets, verify opening hours, or calculate travel times between every attraction, so a polished itinerary can still contain activities that are closed, sold out, or too far apart. Forecast data is only meaningful near the travel dates; when dates are far in the future, the weather API may return limited data or fail. The parser also depends on the LLM returning valid JSON with the requested keys. The code validates the most important fields, but it does not fully validate every nested item in later LLM outputs. Very vague input such as “plan something fun” breaks the chain because there is no destination for the weather tool. Multi-city trips are also only partially supported because the parser returns one destination field and the weather tool geocodes only that first destination.
+The chain has five stages, four of which are LLM calls. Step 1 is claim extraction. It receives the raw user input and returns a JSON object containing the main claim, sub-claims, entities, topics, and claim type. This stage is separate because search works better when the system has extracted the important entities and factual statements instead of searching the whole article blindly. Step 2 is the tool step. It receives the extracted claims and entities and uses DuckDuckGo search to collect source titles, snippets, URLs, and source domains. This output is stored as evidence and evidence-quality metadata. Step 3 is evidence analysis. It receives the claims from Step 1 and the evidence from Step 2, then classifies the claims as supported, contradicted, or uncertain. Step 4 is credibility scoring. It receives the evidence analysis and retrieval quality data and turns them into a score from 0 to 100, a confidence level, a misinformation risk level, and justifications. Step 5 is final report generation. It receives the whole shared state and writes a professional Markdown fact-check report.
 
-If I had more time, I would add a second tool for places or transit data so the itinerary could verify travel time and opening hours. I would also add stronger schema validation with Pydantic, support multi-city requests by looping over destinations, and cache tool responses for repeat demos. The most useful improvement would be an interactive repair step: when Step 1 finds missing destination or dates, the CLI could ask a follow-up question instead of simply stopping or continuing with uncertainty. During development I used LLM assistance to scaffold some boilerplate and to think through prompt boundaries, but I kept the chain design simple and inspectable so I can explain every state transition during evaluation.
+The important design choice is that each step depends on the previous one. Step 2 cannot build good search queries without Step 1. Step 3 cannot analyze evidence without both claims and retrieved sources. Step 4 should not score credibility until Step 3 has separated support from contradiction. Step 5 uses everything that came before it, including the retrieval errors and confidence level, so the final report is not just a generic answer.
 
-## Prompt design appendix
+### Tool Integration
 
-### Step 1: parse request
+The external tool is DuckDuckGo web search. I used web retrieval because LLMs are not search engines and should not be trusted to know whether a recent claim is true. They can also hallucinate sources if asked to verify a claim from memory. The search tool provides grounding by returning evidence items with titles, snippets, URLs, and source names. The LLM steps after retrieval are instructed to use only this evidence. The tool function includes error handling for timeouts, empty results, API or network failure, and malformed responses. If retrieval fails, the chain still continues, but the evidence-quality metadata says the status is empty or partial. This forces the later LLM calls to give a cautious or uncertain verdict rather than pretending the claim was verified.
 
-**System prompt**
+### Limitations
 
-```text
-STEP_ID: parse_request
-You are a travel-request parser. Return only valid JSON. Extract the user's trip request into fields that downstream tools can use. Do not invent missing dates or destinations. If information is absent, put null or an empty list and describe it in missing_information.
-Required JSON keys: destination, start_date, end_date, trip_length_days, travelers, budget, pace, interests, constraints, missing_information, confidence.
-Dates must be ISO YYYY-MM-DD when present. confidence must be low, medium, or high.
-```
+The system is still limited. It relies on search snippets, and snippets can be incomplete or misleading. Some topics, such as health or law, require expert interpretation that a simple search pipeline cannot fully provide. Source reliability is also difficult: a search result from an unknown blog should not count the same as a primary source, but the current implementation only stores basic source metadata. Conflicting evidence is another challenge because the model may need more context than five results provide. API or network failures can also weaken the result. Finally, ambiguous claims are hard to check. If a user says “they are hiding the truth,” there may be no concrete factual claim to verify.
 
-**User prompt template**
+### Reflection
 
-```text
-Parse this travel request into the required JSON schema.
+If I had more time, I would add a full article fetching step so the model could analyze complete evidence instead of snippets. I would also add source reliability scoring, official-source search filters, and stronger JSON schema validation. One thing I learned while building this is that the hardest part is not calling the LLM; it is deciding what each call should know and what it should not know. The chain becomes easier to debug when each step has a narrow responsibility and a clear output format. I also realized that failure handling is part of the reasoning design: if search fails, the final answer should become more cautious, not more creative.
 
-RAW_REQUEST:
-{raw_request}
-```
+## Prompt Design Section
 
-This prompt is strict because the next step is a tool call. The geocoder needs a destination string and the weather API needs ISO dates, so the system prompt forbids invented destinations and dates. The `missing_information` and `confidence` fields are included so malformed input can be handled honestly.
-
-### Step 3: analyze conditions
+### Step 1 — Claim Extraction
 
 **System prompt**
 
 ```text
-STEP_ID: analyze_conditions
-You are a practical travel risk analyst. Return only valid JSON. Use the parsed request and tool weather data to identify planning assumptions, weather risks, weather opportunities, packing advice, daily strategy, and uncertainties. If weather.status is unavailable, explicitly mark weather-specific advice as uncertain instead of fabricating weather facts.
-Required JSON keys: planning_assumptions, weather_risks, weather_opportunities, packing_advice, daily_strategy, uncertainties.
+You are a careful fact-checking claim extraction assistant.
+Your job is not to decide whether the text is true yet. Your job is only to extract checkable factual claims.
+Separate factual statements from opinions, predictions, jokes, or emotional language.
+Return only valid JSON. Do not wrap the JSON in Markdown.
+
+Required JSON schema:
+{
+  "main_claim": "one sentence summary of the central factual claim",
+  "sub_claims": ["specific factual sub-claims that can be checked"],
+  "entities": ["people, organizations, places, laws, products, datasets, or events mentioned"],
+  "topics": ["topic labels such as politics, health, climate, technology, economy"],
+  "claim_type": "news headline | social media claim | article excerpt | quote | unclear"
+}
 ```
 
-**User prompt template**
+**User prompt**
 
 ```text
-Use Step 1 and Step 2 outputs to produce weather-aware planning analysis.
+Extract factual claims from the user text below.
+If the input is vague, keep the main_claim conservative and put uncertain details in sub_claims only when they are actually stated.
 
-STEP_1_PARSED_REQUEST:
-{parsed_request_json}
-
-STEP_2_TOOL_WEATHER:
-{weather_json}
+USER_NEWS_TEXT:
+{user_input}
 ```
 
-This prompt isolates reasoning about conditions from itinerary writing. The next step depends on `daily_strategy`, `packing_advice`, and `uncertainties`; without those fields, the itinerary drafter would be tempted to bury weather caveats in prose or omit them entirely.
+This prompt matters because Step 2 uses the claim and entity fields to build search queries. The JSON constraint prevents the next step from needing to parse unstructured prose.
 
-### Step 4: draft itinerary
+### Step 3 — Evidence Analysis
 
 **System prompt**
 
 ```text
-STEP_ID: draft_itinerary
-You are a travel itinerary drafter. Return only valid JSON. Create a realistic day-by-day itinerary that obeys the parsed user constraints and uses the condition analysis. Keep the pace consistent with the parsed pace field. Every day must include a rain_backup.
-Required JSON keys: title, days. Each item in days must include day, theme, morning, afternoon, evening, rain_backup.
+You are an evidence analyst for a fact-checking pipeline.
+You must compare extracted claims against retrieved web evidence.
+Do not use your memory as evidence. Use only the evidence items provided.
+Return only valid JSON. Do not wrap the JSON in Markdown.
 ```
 
-**User prompt template**
+**User prompt**
 
 ```text
-Draft an itinerary from the previous structured outputs.
+Analyze whether the evidence supports or contradicts the extracted claims.
+If retrieval failed or evidence is sparse, say that the relevant claims are uncertain rather than guessing.
 
-STEP_1_PARSED_REQUEST:
-{parsed_request_json}
+EXTRACTED_CLAIMS_JSON:
+{claims}
 
-STEP_3_CONDITION_ANALYSIS:
-{condition_analysis_json}
+RETRIEVED_EVIDENCE_JSON:
+{evidence}
 ```
 
-This prompt requires a JSON draft rather than a final report so the critique step can inspect day-level structure. The `rain_backup` requirement is included because the domain is weather-aware planning and because the final report needs concrete contingency options.
+The key constraint is “use only the evidence items provided.” Without that line, the model might answer from memory and hide the retrieval failure. Step 4 depends on the supported, contradicted, and uncertain lists.
 
-### Step 5: critique itinerary
+### Step 4 — Credibility Scoring
 
 **System prompt**
 
 ```text
-STEP_ID: critique_itinerary
-You are a strict itinerary reviewer. Return only valid JSON. Compare the draft against the original parsed request and weather analysis. Identify mismatches, unsupported claims, missing backups, and places where the final answer should warn the user.
-Required JSON keys: overall_score, strengths, issues, required_revisions. overall_score must be an integer from 1 to 10.
+You are a fact-checking credibility scorer.
+Score credibility using only the claim extraction, retrieved evidence, and evidence analysis supplied by the pipeline.
+Return only valid JSON. Do not wrap the JSON in Markdown.
 ```
 
-**User prompt template**
+**User prompt**
 
 ```text
-Critique Step 4 using the earlier chain outputs. Do not rewrite the itinerary; produce revision instructions.
+Generate a credibility score for the original claim using the previous step outputs.
+Consider evidence quantity, source quality, contradictions, and uncertainty.
 
-STEP_1_PARSED_REQUEST:
-{parsed_request_json}
+EXTRACTED_CLAIMS_JSON:
+{claims}
 
-STEP_3_CONDITION_ANALYSIS:
-{condition_analysis_json}
+EVIDENCE_QUALITY_JSON:
+{evidence_quality}
 
-STEP_4_DRAFT_ITINERARY:
-{draft_itinerary_json}
+EVIDENCE_ANALYSIS_JSON:
+{analysis}
 ```
 
-This prompt deliberately says not to rewrite the itinerary. The purpose of Step 5 is to create targeted revision instructions, not another competing final answer. Step 6 then depends on `required_revisions` to improve the draft.
+This prompt separates scoring from evidence analysis. That makes the score more explainable because the model has to use the already-classified evidence rather than redoing the whole task informally.
 
-### Step 6: final report
+### Step 5 — Final Report
 
 **System prompt**
 
 ```text
-STEP_ID: final_report
-You are a travel briefing editor. Produce a polished Markdown report, not JSON. The report must be structured with headings and be directly useful to the traveler. Use the critique to revise the draft. Include: executive summary, planning assumptions, day-by-day itinerary, weather/packing notes, contingency plan, and limitations. Do not claim bookings, opening hours, or live conditions unless present in the state.
+You are a professional fact-check report writer.
+Write a clear Markdown report for a reader who wants to know whether the original claim is credible.
+Use only the state data supplied by the pipeline. Do not invent sources, dates, or facts.
+The report must include these sections:
+1. Original Claim
+2. Extracted Factual Claims
+3. Evidence Summary
+4. Supported vs. Contradicted Points
+5. Credibility Score
+6. Confidence Level
+7. Final Verdict
+8. Limitations of Verification
 ```
 
-**User prompt template**
+**User prompt**
 
 ```text
-Create the final Markdown report from the accumulated chain state. The final report must use Step 5's critique to improve Step 4's draft.
+Create the final fact-check report from the complete shared state below.
+Use the credibility score and confidence level exactly as provided unless the state is malformed.
+Make the verdict cautious if retrieval failed, evidence is weak, or claims are ambiguous.
 
-ACCUMULATED_STATE:
-{state_json}
+SHARED_STATE_JSON:
+{state}
 ```
 
-The final prompt switches from JSON to Markdown because the user needs an actionable document, not raw model text or internal state. It includes a limitation instruction to prevent the report from overstating what the chain knows.
+The final prompt is Markdown instead of JSON because the deliverable should be readable by a real person. The previous outputs still remain available in the JSON state file.
 
-### Prompt iteration example
+### Failed Prompt Iteration Example
 
-An earlier version of the Step 3 system prompt said only, “Analyze the weather and give advice.” In testing, that produced prose paragraphs and sometimes implied confidence even when the weather tool returned no data. I changed it to require JSON keys and added the sentence, “If `weather.status` is unavailable, explicitly mark weather-specific advice as uncertain instead of fabricating weather facts.” This made the output safer and easier for Step 4 to consume because risks, opportunities, and uncertainties were separated into predictable fields.
+An earlier version of the evidence-analysis prompt said, “Use the evidence and your knowledge to decide if the claim is true.” This was a bad prompt because the model sometimes added facts that were not in the retrieved snippets. I changed it to say, “Do not use your memory as evidence. Use only the evidence items provided.” I also forced the output into supported, contradicted, and uncertain lists. This improved the chain because Step 4 could score the claim based on explicit categories instead of vague paragraphs.
+
+## Possible Viva Questions and Answers
+
+**Why not use one prompt?**  
+Because fake news verification has several different tasks: extracting claims, retrieving evidence, comparing evidence, scoring credibility, and writing a report. One prompt hides those steps and makes errors hard to inspect.
+
+**Why use external search?**  
+LLMs are not reliable databases. Search gives the system current external evidence and reduces the chance that the model invents sources or relies on outdated memory.
+
+**What happens if retrieval fails?**  
+The tool records an empty or partial status in `state["evidence_quality"]`, stores errors in `state["errors"]`, and the chain continues. Later prompts are told to mark claims uncertain when evidence is missing.
+
+**What is stored in state?**  
+The state stores the original input, extracted claims, retrieved evidence, evidence quality, evidence analysis, credibility scoring, final report, errors, and a trace of each step’s inputs and outputs.
+
+**Where does the chain fail?**  
+It can fail on vague claims, weak search results, misleading snippets, source reliability problems, and cases where expert domain knowledge is required.
+
+**Why are outputs structured?**  
+Structured outputs make dependencies explicit. Step 2 needs `entities`; Step 3 needs `claims` and `evidence`; Step 4 needs `analysis`; Step 5 needs the whole state.
+
+**How does each step depend on the previous one?**  
+Step 2 searches using Step 1 claims. Step 3 compares Step 1 claims with Step 2 evidence. Step 4 scores based on Step 3 analysis and Step 2 evidence quality. Step 5 writes the final report using every previous output.
