@@ -72,7 +72,7 @@ project_root/
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate
+.venv\Scripts\activate
 pip install -r requirements.txt
 python -m spacy download en_core_web_sm
 ```
@@ -155,15 +155,21 @@ A single prompt can produce a polished answer, but it hides intermediate reasoni
 4. **Framing analysis depends on previous sentiment and bias outputs**, so rhetoric and reader-impact analysis is grounded in earlier findings.
 5. **Final report generation synthesizes all prior analyses** into a structured assessment instead of starting from raw text again.
 
-## Screenshots Placeholders
+Article
+ ↓
+Summary
+ ↓
+Entities
+ ↓
+Bias
+ ↓
+Framing
+ ↓
+Reliability
+ ↓
+Final Report
 
-Add screenshots after running the project:
 
-```text
-docs/screenshots/console_run.png
-docs/screenshots/report_markdown.png
-docs/screenshots/report_json.png
-```
 
 ## Limitations
 

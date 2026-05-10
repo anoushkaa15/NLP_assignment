@@ -1,84 +1,92 @@
 {
   "article": "City officials announced a new climate resilience plan on Tuesday after weeks of heavy flooding damaged several neighborhoods. The mayor said the plan will expand drainage systems, restore wetlands, and create emergency cooling centers before next summer. Supporters described the proposal as a long-overdue investment in public safety, while critics argued that the announcement was rushed and did not include enough detail about funding. The article quoted residents who said they were frustrated by repeated flood warnings and slow repairs. It also cited a municipal budget summary showing that the first phase would cost about $42 million over three years.\n",
   "summary": {
-    "summary": "City officials announced a climate resilience plan after flooding damaged several neighborhoods.",
+    "summary": "City officials have announced a new climate resilience plan in response to recent heavy flooding, which includes expanding drainage, restoring wetlands, and establishing emergency cooling centers. The plan, costing an estimated $42 million for its first phase over three years, has been praised by supporters as a necessary public safety investment but criticized by others for being rushed and lacking funding details. Residents expressed frustration over recurring flood issues and slow repairs.",
     "main_points": [
-      "The plan expands drainage systems and restores wetlands.",
-      "Emergency cooling centers are planned before next summer.",
-      "Supporters frame the plan as public-safety investment, while critics question funding detail.",
-      "The article cites residents and a municipal budget summary."
+      "City officials announced a new climate resilience plan following weeks of heavy flooding.",
+      "The plan aims to expand drainage systems, restore wetlands, and create emergency cooling centers before next summer.",
+      "The first phase of the plan is estimated to cost $42 million over three years.",
+      "Supporters view the plan as a crucial investment in public safety.",
+      "Critics argue the announcement was rushed and lacked sufficient funding details.",
+      "Residents expressed frustration with repeated flood warnings and slow repair efforts."
     ],
-    "topic_overview": "Local climate adaptation, infrastructure planning, flood response, and public spending.",
-    "confidence": 0.91,
-    "reasoning_summary": "The summary preserves the article's policy proposal, competing reactions, and cited evidence without judging factual truth."
+    "topic_overview": "This article discusses a municipal government's response to climate-related challenges, specifically heavy flooding, through the announcement of a new resilience plan, its proposed components, funding, and the initial reactions from various stakeholders including officials, supporters, critics, and affected residents.",
+    "confidence": 0.95,
+    "reasoning_summary": "I preserved the core announcement of the climate resilience plan, its stated objectives, the timeline, the estimated cost, and the diverse reactions from supporters, critics, and residents. The summary focuses on what the article explicitly states without interpretation or judgment, ensuring neutrality for subsequent analysis steps."
   },
   "entities": {
     "people": [],
-    "organizations": [
-      "City"
-    ],
-    "locations": [
-      "City"
-    ],
+    "organizations": [],
+    "locations": [],
     "events": [],
     "topics": [
       "plan",
-      "drainage",
-      "systems",
-      "wetlands",
-      "emergency",
-      "cooling",
-      "centers",
-      "next"
+      "city",
+      "announced",
+      "climate",
+      "resilience",
+      "weeks",
+      "heavy",
+      "flooding"
     ],
-    "extraction_notes": "Fallback regex extraction used because spaCy or en_core_web_sm was unavailable."
+    "extraction_notes": "Entities extracted with spaCy en_core_web_sm NER plus keyword frequency topics."
   },
   "bias_analysis": {
     "sentiment": "mixed",
-    "bias_score": 3.4,
+    "bias_score": 3.0,
     "political_leaning": "not clearly partisan",
-    "social_bias_indicators": [
-      "contrasts supporters and critics",
-      "emphasizes public safety and funding concerns"
-    ],
+    "social_bias_indicators": [],
     "emotionally_loaded_terms": [
-      "frustrated",
+      "heavy flooding",
+      "praised",
+      "necessary public safety investment",
+      "criticized",
       "rushed",
-      "damaged"
+      "lacking funding details",
+      "frustration",
+      "recurring flood issues",
+      "slow repairs"
     ],
-    "tone_analysis": "Mostly informational with mild urgency around flood damage and resident frustration.",
-    "sensationalism_score": 2.8,
-    "confidence": 0.86,
-    "explanation": "The article includes both supportive and critical perspectives and uses limited emotionally loaded wording."
+    "tone_analysis": "The tone is primarily informative, reporting on a new municipal plan and the diverse reactions to it. It balances positive feedback from supporters with criticism and frustration from residents, conveying a sense of urgency due to the context of 'heavy flooding' and 'recurring flood issues'.",
+    "sensationalism_score": 2.0,
+    "confidence": 0.9,
+    "explanation": "The sentiment is mixed due to the inclusion of both 'praised' by supporters and 'criticized' by others, alongside residents expressing 'frustration'. The bias score is low (3) because the summary presents multiple viewpoints (officials, supporters, critics, residents) without overtly favoring one. The political leaning is 'not clearly partisan' as the article focuses on a local government initiative and public reaction, not aligning with broader political ideologies. Emotionally loaded terms like 'heavy flooding', 'necessary public safety investment', 'rushed', and 'frustration' contribute to the emotional landscape but are largely attributed to stakeholders or describe the situation rather than being editorialized. The sensationalism score is low (2) as the language, while including some emotionally charged terms, does not employ hyperbolic or exaggerated phrasing to dramatize the events or reactions; it reports them directly."
   },
   "framing_analysis": {
-    "headline_style": "Policy-focused and moderately urgent",
-    "emotional_intensity": 4.1,
+    "headline_style": "informative",
+    "emotional_intensity": 6.0,
     "persuasive_techniques": [
-      "problem-solution framing",
-      "appeal to public safety",
-      "balanced contrast"
+      "attribution_of_quotes",
+      "problem_solution_framing",
+      "appeal_to_public_safety",
+      "appeal_to_urgency",
+      "factual_data_presentation"
     ],
     "language_patterns": [
-      "institutional announcement framing",
-      "resident-impact language",
-      "cost and timeline details"
+      "direct_reporting",
+      "attribution_to_stakeholders",
+      "problem_response_structure",
+      "balanced_presentation_of_viewpoints"
     ],
-    "framing_style": "The article frames climate resilience as a practical governance and infrastructure issue.",
-    "tone_style": "analytical with mild emotional emphasis",
-    "tone_consistency": "generally consistent, moving from announcement to reactions and budget context",
-    "target_audience_tone": "civic-minded local readers",
+    "framing_style": "problem-solution with stakeholder debate",
+    "tone_style": "informative and balanced with underlying urgency",
+    "tone_consistency": "consistent",
+    "target_audience_tone": "general public, local residents, policymakers",
     "emotionally_charged_phrases": [
-      "heavy flooding damaged",
-      "frustrated by repeated flood warnings",
-      "rushed"
+      "heavy flooding damaged several neighborhoods",
+      "long-overdue investment in public safety",
+      "rushed",
+      "frustrated by repeated flood warnings and slow repairs"
     ],
     "reader_impact": [
-      "may increase concern about infrastructure preparedness",
-      "may encourage attention to budget accountability"
+      "informed about the plan and reactions",
+      "concerned about flooding and public safety",
+      "empathetic towards frustrated residents",
+      "skeptical or questioning regarding the plan's details and execution",
+      "sense of urgency regarding climate resilience"
     ],
-    "confidence": 0.84,
-    "reasoning_summary": "The rhetoric relies more on policy framing than sensational claims, while still highlighting resident frustration."
+    "confidence": 0.9,
+    "reasoning_summary": "The article's opening is direct and factual, characteristic of an informative news report. Emotional intensity is moderate to high, driven by phrases like 'heavy flooding damaged several neighborhoods' and residents being 'frustrated by repeated flood warnings and slow repairs,' balanced by the official response. Persuasive techniques include attributing statements to various stakeholders (mayor, supporters, critics, residents) to build credibility and present diverse viewpoints, framing the plan as a solution to a problem, and appealing to public safety. Language patterns show consistent direct reporting and clear attribution. The framing style presents the climate resilience plan as a necessary response to a crisis, but also highlights the debate and criticism surrounding its implementation and funding. The tone is primarily informative and balanced, yet conveys an underlying urgency due to the context of recent flooding and public frustration. This tone is consistent throughout the excerpt and targets a broad audience, including local residents affected by the issues and those interested in civic governance. The emotionally charged phrases effectively convey the stakes and sentiments involved, leading to a reader impact that is both informative and emotionally resonant, fostering concern, empathy, and potential skepticism."
   },
   "source_reliability": {
     "transparency_score": 6.0,
@@ -94,27 +102,28 @@
     ]
   },
   "final_report": {
-    "title": "News Credibility Indicator Analysis: Climate Resilience Plan Article",
-    "overall_assessment": "The article shows moderate credibility indicators and relatively balanced framing, with mild emotional emphasis around flood impacts and funding uncertainty.",
-    "credibility_indicator_score": 78.0,
-    "confidence": 0.82,
+    "title": "Report on City's Climate Resilience Plan Announcement",
+    "overall_assessment": "The article demonstrates a moderate to high level of credibility by presenting a balanced perspective on the city's new climate resilience plan. It includes diverse viewpoints from officials, supporters, critics, and affected residents, and incorporates specific quantitative data. The reporting style is primarily informative, with low indicators of overt political bias or sensationalism, though it effectively conveys the urgency and public sentiment surrounding the issue.",
+    "credibility_indicator_score": 69.0,
+    "confidence": 0.92,
     "key_findings": [
-      "The article summarizes a local policy proposal and includes multiple perspectives.",
-      "Named institutions, resident reactions, and budget details improve evidence density.",
-      "Bias and sensationalism indicators are present but not dominant.",
-      "Framing emphasizes public safety, infrastructure, and accountability rather than definitive blame."
+      "The article provides a balanced presentation of viewpoints, quoting officials, supporters, critics, and residents.",
+      "Specific quantitative data, such as the $42 million cost for the first phase over three years, is included, enhancing factual grounding.",
+      "The tone is informative and balanced, effectively conveying an underlying urgency related to heavy flooding and public frustration without resorting to sensationalism.",
+      "Attribution of statements to various stakeholders is consistent, contributing to transparency.",
+      "Low indicators of overt political bias or sensationalism were identified, suggesting a neutral reporting stance."
     ],
     "recommendations": [
-      "Check the full municipal budget document for funding details.",
-      "Compare coverage from additional local outlets for framing differences.",
-      "Look for follow-up reporting on implementation timelines and community response."
+      "Readers are encouraged to seek further details regarding the plan's specific funding sources and long-term financial sustainability.",
+      "Cross-reference the information with official municipal documents, independent expert analyses, or other news outlets for a comprehensive understanding.",
+      "Monitor future reports on the implementation progress of the climate resilience plan and ongoing public feedback."
     ],
     "limitations": [
-      "This pipeline analyzes rhetoric and credibility indicators, not factual truth.",
-      "The spaCy entity stage may miss local names or classify entities imperfectly.",
-      "LLM judgments about tone and bias are interpretive and should be reviewed by a human."
+      "The analysis is based on a single, relatively short article, which limits the depth of contextual information available.",
+      "The article does not delve into the scientific or engineering specifics of the proposed drainage systems or wetland restoration, focusing more on the announcement and reactions.",
+      "The 'attribution quality' was assessed as 'moderate', suggesting there might be room for even more detailed sourcing in some areas."
     ],
-    "pipeline_reasoning_summary": "The system summarized the article, extracted entities with a tool, analyzed bias indicators from the summary and entities, then used those results for rhetoric and framing analysis before synthesizing a final report.",
-    "markdown_report": "# News Credibility Indicator Analysis\n\n## Overall Assessment\nThe article shows moderate credibility indicators and relatively balanced framing. It is not treated as true or false; the pipeline evaluates language, attribution, rhetoric, and reader-impact signals.\n\n## Key Findings\n- The story includes policy details, resident reactions, and a budget figure.\n- Bias indicators are mild and mostly connected to urgency around flood damage.\n- Framing centers on public safety, infrastructure, and accountability.\n\n## Recommendations\n- Compare with additional local reporting.\n- Check the municipal budget source directly.\n- Track follow-up coverage on implementation.\n\n## Limitations\nThis is a credibility-indicator and rhetoric analysis, not a definitive verification system.\n"
+    "pipeline_reasoning_summary": "The pipeline systematically analyzed the article's content through multiple stages. The summary step accurately captured the core facts and diverse reactions. Bias analysis identified a mixed sentiment but a low overall bias and sensationalism score due to the balanced inclusion of various stakeholder perspectives. Framing analysis highlighted the article's problem-solution structure and its informative, yet urgent, tone. Source reliability assessment noted good transparency and evidence density, supported by quantitative details and clear attribution. The collective insights from these stages informed the final credibility indicator score and overall assessment, emphasizing the article's balanced reporting despite its brevity.",
+    "markdown_report": "# Academic News Credibility Report\n\n## Title\nReport on City's Climate Resilience Plan Announcement\n\n## Overall Assessment\nThe article demonstrates a moderate to high level of credibility by presenting a balanced perspective on the city's new climate resilience plan. It includes diverse viewpoints from officials, supporters, critics, and affected residents, and incorporates specific quantitative data. The reporting style is primarily informative, with low indicators of overt political bias or sensationalism, though it effectively conveys the urgency and public sentiment surrounding the issue.\n\n## Credibility Indicator Score\n**69/100**\n\n## Confidence\n**0.92**\n\n## Key Findings\n*   The article provides a balanced presentation of viewpoints, quoting officials, supporters, critics, and residents.\n*   Specific quantitative data, such as the $42 million cost for the first phase over three years, is included, enhancing factual grounding.\n*   The tone is informative and balanced, effectively conveying an underlying urgency related to heavy flooding and public frustration without resorting to sensationalism.\n*   Attribution of statements to various stakeholders is consistent, contributing to transparency.\n*   Low indicators of overt political bias or sensationalism were identified, suggesting a neutral reporting stance.\n\n## Recommendations\n*   Readers are encouraged to seek further details regarding the plan's specific funding sources and long-term financial sustainability.\n*   Cross-reference the information with official municipal documents, independent expert analyses, or other news outlets for a comprehensive understanding.\n*   Monitor future reports on the implementation progress of the climate resilience plan and ongoing public feedback.\n\n## Limitations\n*   The analysis is based on a single, relatively short article, which limits the depth of contextual information available.\n*   The article does not delve into the scientific or engineering specifics of the proposed drainage systems or wetland restoration, focusing more on the announcement and reactions.\n*   The 'attribution quality' was assessed as 'moderate', suggesting there might be room for even more detailed sourcing in some areas.\n\n## Pipeline Reasoning Summary\nThe pipeline systematically analyzed the article's content through multiple stages. The summary step accurately captured the core facts and diverse reactions. Bias analysis identified a mixed sentiment but a low overall bias and sensationalism score due to the balanced inclusion of various stakeholder perspectives. Framing analysis highlighted the article's problem-solution structure and its informative, yet urgent, tone. Source reliability assessment noted good transparency and evidence density, supported by quantitative details and clear attribution. The collective insights from these stages informed the final credibility indicator score and overall assessment, emphasizing the article's balanced reporting despite its brevity."
   }
 }
