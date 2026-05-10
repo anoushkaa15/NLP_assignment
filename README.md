@@ -1,264 +1,182 @@
-# Fake News Verification Agent
+# Multi-Step NLP Pipeline for News Credibility Analysis
 
-A submission-ready **Multi-Step LLM Agent** programming assignment project using the **Gemini API** in Python. The agent accepts a news headline, article excerpt, or viral claim and verifies its credibility through a visible, multi-stage reasoning pipeline.
+A professional academic project for analyzing news articles through **summarization**, **entity extraction**, **bias detection**, **framing analysis**, and **credibility indicator reporting**.
 
-This is **not** a single-prompt chatbot. Each stage reads from and writes to a shared dictionary state object, and later stages explicitly depend on structured outputs from earlier stages.
+This project does **not** label articles as true or false and does **not** make definitive truth classifications. It is a multi-step NLP/LLM system for studying how a news article communicates information, which entities it foregrounds, what tone it uses, and what credibility indicators or caution flags appear in the writing.
 
 ## Project Overview
 
-The agent performs a small fact-checking workflow:
+The system accepts a raw news article and processes it through five dependent stages:
 
-1. Extract factual claims from the user text.
-2. Retrieve external evidence with DuckDuckGo search.
-3. Analyze whether the evidence supports, contradicts, or fails to verify the claims.
-4. Score the credibility of the claim.
-5. Produce a structured Markdown fact-check report and a JSON state file.
+1. **Article Summarization (LLM)** — compresses long-form article text into a structured summary.
+2. **Entity Extraction (spaCy Tool)** — extracts people, organizations, locations, events, and topics.
+3. **Bias & Sentiment Analysis (LLM)** — analyzes sentiment, bias indicators, loaded language, and sensationalism.
+4. **Framing & Language Analysis (LLM)** — studies rhetoric, framing, persuasive techniques, and likely reader impact.
+5. **Final Report Generation (LLM)** — synthesizes all prior outputs into Markdown and JSON reports.
 
-The goal is not to replace professional fact-checkers. The goal is to demonstrate applied NLP engineering: decomposition, retrieval augmentation, state management, prompt design, error handling, and synthesis.
-
-## Architecture
+## Architecture Diagram
 
 ```text
-project/
+Raw Article
+     ↓
+Summarizer LLM
+     ↓
+spaCy Entity Tool
+     ↓
+Bias Analysis LLM
+     ↓
+Framing & Language Analysis LLM
+     ↓
+Final Report Generator
+     ↓
+outputs/report.json + outputs/report.md
+```
+
+## Folder Structure
+
+```text
+project_root/
 │
 ├── main.py
 ├── requirements.txt
+├── .env.example
 ├── README.md
-├── REPORT.md
-├── prompts/
-│   ├── claim_extraction.txt
-│   ├── evidence_analysis.txt
-│   ├── credibility_scoring.txt
-│   └── final_report.txt
+├── sample_article.txt
+│
+├── chains/
+│   ├── summarizer.py
+│   ├── bias_detector.py
+│   ├── framing_analyzer.py
+│   └── report_generator.py
 │
 ├── tools/
-│   └── web_search.py
+│   └── entity_extractor.py
 │
-├── outputs/
-│   ├── final_report.md
-│   └── final_report.json
+├── prompts/
+│   └── prompt_templates.py
 │
-├── examples/
-│   └── sample_claim.txt
+├── models/
+│   └── schemas.py
 │
-└── utils/
-    ├── gemini_client.py
-    └── state_manager.py
+├── utils/
+│   ├── llm.py
+│   ├── helpers.py
+│   └── logger.py
+│
+└── outputs/
+    ├── report.json
+    └── report.md
 ```
 
-No LangChain, LlamaIndex, or agent framework is used. The chain is written directly in Python so it is easy to explain during a viva or live demo.
-
-## Chain Explanation
-
-The shared state starts as:
-
-```python
-state = {
-    "user_input": "",
-    "claims": {},
-    "evidence": [],
-    "evidence_quality": {},
-    "analysis": {},
-    "credibility": {},
-    "final_report": "",
-    "errors": [],
-    "trace": []
-}
-```
-
-### Step 1 — Claim Extraction (LLM)
-
-**Input:** raw user news text from `state["user_input"]`.
-
-**Output:** JSON stored in `state["claims"]`:
-
-```json
-{
-  "main_claim": "",
-  "sub_claims": [],
-  "entities": [],
-  "topics": [],
-  "claim_type": ""
-}
-```
-
-This step separates factual claims from opinions and identifies entities that Step 2 uses for search queries.
-
-### Step 2 — Web Evidence Retrieval (Tool Call)
-
-**Input:** `state["claims"]` from Step 1.
-
-**Tool:** DuckDuckGo HTML search through `tools/web_search.py` using `requests`.
-
-**Output:** evidence list in `state["evidence"]` and quality metadata in `state["evidence_quality"]`:
-
-```json
-[
-  {
-    "title": "",
-    "snippet": "",
-    "url": "",
-    "source": ""
-  }
-]
-```
-
-The tool attempts to gather at least five evidence items. If search fails, times out, returns no results, or returns malformed HTML, the program records the problem and continues with partial or empty evidence.
-
-### Step 3 — Evidence Analysis (LLM)
-
-**Input:** `state["claims"]` and `state["evidence"]`.
-
-**Output:** JSON stored in `state["analysis"]`:
-
-```json
-{
-  "supported_claims": [],
-  "contradicted_claims": [],
-  "uncertain_claims": [],
-  "reasoning": []
-}
-```
-
-The LLM is instructed to use only retrieved evidence, not its memory.
-
-### Step 4 — Credibility Scoring (LLM)
-
-**Input:** `state["analysis"]` and `state["evidence_quality"]`.
-
-**Output:** JSON stored in `state["credibility"]`:
-
-```json
-{
-  "credibility_score": 0,
-  "confidence_level": "",
-  "misinformation_risk": "",
-  "justification": []
-}
-```
-
-This step converts evidence analysis into a practical score while considering retrieval quality.
-
-### Step 5 — Final Fact-Check Report (LLM)
-
-**Input:** all previous state fields.
-
-**Output:** Markdown saved to `outputs/final_report.md` and full state JSON saved to `outputs/final_report.json`.
-
-The report contains:
-
-1. Original claim
-2. Extracted factual claims
-3. Evidence summary
-4. Supported vs. contradicted points
-5. Credibility score
-6. Confidence level
-7. Final verdict
-8. Limitations of verification
-
-## Setup Instructions
-
-Create and activate a virtual environment:
+## Installation
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+python -m spacy download en_core_web_sm
 ```
 
-## API Setup
+## Gemini API Setup
 
-Create a `.env` file in the project root:
+Copy the example environment file and add your key:
+
+```bash
+cp .env.example .env
+```
+
+`.env`:
 
 ```bash
 GEMINI_API_KEY=your_gemini_api_key_here
 GEMINI_MODEL=gemini-2.0-flash
 ```
 
-The code also accepts `GOOGLE_API_KEY` instead of `GEMINI_API_KEY`.
+The code also accepts `GOOGLE_API_KEY` if that is how your environment stores Gemini credentials.
 
-## Run Instructions
+## Execution Steps
 
-Run with a direct claim:
-
-```bash
-python main.py --claim "Viral posts claim that NASA announced Earth will experience six days of total darkness next month because of a solar storm."
-```
-
-Run with a file:
+Run with Gemini:
 
 ```bash
-python main.py --input-file examples/sample_claim.txt
+python main.py --article-file sample_article.txt
 ```
 
-Run a no-key smoke test with deterministic local outputs:
+Run a deterministic no-key demo:
 
 ```bash
-python main.py --input-file examples/sample_claim.txt --mock-llm --mock-search
+python main.py --article-file sample_article.txt --mock
 ```
 
-Run a malformed input demo:
-
-```bash
-python main.py --claim "asdf" --mock-llm --mock-search
-```
-
-Expected behavior: the program exits gracefully and explains that no checkable factual claim was found.
-
-## Example Input
+Outputs are written automatically to:
 
 ```text
-Viral posts claim that NASA announced Earth will experience six days of total darkness next month because of a solar storm.
+outputs/report.json
+outputs/report.md
 ```
 
-## Example Output Summary
+## Sample Console Output
 
 ```text
-Credibility Score: 12 / 100
-Confidence Level: Medium
-Final Verdict: The claim is very likely false because retrieved evidence does not show a NASA announcement and describes similar claims as recurring hoaxes.
+▶ Running summarization...
+✓ Summarization complete.
+▶ Extracting entities with spaCy NER tool...
+✓ Entity extraction complete.
+▶ Detecting bias and sentiment indicators...
+✓ Bias and sentiment analysis complete.
+▶ Running framing analysis...
+✓ Framing analysis complete.
+▶ Generating report...
+✓ Final report generated.
+✓ Saved outputs to outputs/report.json and outputs/report.md
 ```
 
-The actual output is a full Markdown report plus a JSON file containing the whole state and trace.
+## Sample Output
 
-## Sample Execution Log
-
-```text
-===== STEP 1 - CLAIM EXTRACTION (LLM) =====
+```json
 {
-  "claims": {
-    "main_claim": "NASA announced Earth will experience six days of total darkness next month because of a solar storm.",
-    "sub_claims": [...],
-    "entities": ["NASA", "Earth", "solar storm"],
-    "topics": ["science", "space", "misinformation"],
-    "claim_type": "social media claim"
-  }
+  "overall_assessment": "The article shows moderate credibility indicators and relatively balanced framing...",
+  "credibility_indicator_score": 78.0,
+  "confidence": 0.82,
+  "key_findings": [
+    "The article includes policy details and multiple perspectives.",
+    "Bias indicators are present but not dominant."
+  ]
 }
+```
 
-===== STEP 2 - WEB EVIDENCE RETRIEVAL (TOOL) =====
-{
-  "evidence_quality": {
-    "requested_results": 5,
-    "retrieved_results": 5,
-    "status": "ok"
-  }
-}
+## Why Multi-Step Pipelines Outperform Single Prompts
+
+A single prompt can produce a polished answer, but it hides intermediate reasoning and makes failures difficult to inspect. This project uses multiple stages because:
+
+1. **Summarization reduces noise** and compresses long-form articles into a manageable representation.
+2. **Entity extraction identifies important actors, organizations, locations, events, and topics** with a tool rather than relying only on LLM interpretation.
+3. **Bias analysis depends on both summary and extracted entities**, allowing the system to discuss tone around specific actors and topics.
+4. **Framing analysis depends on previous sentiment and bias outputs**, so rhetoric and reader-impact analysis is grounded in earlier findings.
+5. **Final report generation synthesizes all prior analyses** into a structured assessment instead of starting from raw text again.
+
+## Screenshots Placeholders
+
+Add screenshots after running the project:
+
+```text
+docs/screenshots/console_run.png
+docs/screenshots/report_markdown.png
+docs/screenshots/report_json.png
 ```
 
 ## Limitations
 
-- Search snippets are weaker than full article text.
-- DuckDuckGo HTML structure may change.
-- Some claims require domain experts, official datasets, or paid news archives.
-- Conflicting sources can make scoring uncertain.
-- The LLM can still misread evidence, so the report should be treated as an assisted verification draft.
-- The agent does not automatically rank source reliability beyond simple retrieval metadata.
+- This system analyzes credibility indicators, rhetoric, framing, and audience impact; it does not verify truth.
+- spaCy NER may miss domain-specific entities or misclassify names.
+- LLM bias and framing judgments are interpretive and should be reviewed by a human.
+- Source reliability heuristics are simple text signals, not a substitute for full source auditing.
+- Gemini rate limits may require retries or shorter inputs.
 
 ## Future Improvements
 
-- Add full-page article fetching and citation extraction.
-- Add source reliability scoring.
-- Add official-site targeted search for government, health, and science claims.
-- Add claim-by-claim confidence scores.
-- Add a small web UI for demos.
-- Add tests for prompt output schema validation.
+- Add a web interface for live demos.
+- Add source metadata extraction from article URLs.
+- Compare multiple articles about the same event for framing differences.
+- Add human annotation mode for classroom evaluation.
+- Add automated tests with fixed mock outputs.
