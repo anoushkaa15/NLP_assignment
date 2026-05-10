@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Any
 
 from tools.web_search import mock_evidence, retrieve_evidence
-from utils.grok_client import GrokClient, GrokClientError, MockGrokClient
+from utils.gemini_client import GeminiClient, GeminiClientError, MockGeminiClient
 from utils.state_manager import create_initial_state, print_step_debug, record_step, save_report_markdown, save_state_json
 
 PROMPT_DIR = Path("prompts")
@@ -29,7 +29,7 @@ class AgentInputError(ValueError):
 
 
 def load_dotenv_if_available() -> None:
-    """Load .env variables for real Grok runs.
+    """Load .env variables for real Gemini runs.
 
     python-dotenv is listed in requirements.txt. It is imported here so mock
     classroom runs can still execute in restricted environments before packages
@@ -163,7 +163,7 @@ def run_agent(
 
     if not mock_llm:
         load_dotenv_if_available()
-    llm = MockGrokClient() if mock_llm else GrokClient()
+    llm = MockGeminiClient() if mock_llm else GeminiClient()
     state = create_initial_state(user_input)
 
     state = step_extract_claims(state, llm, debug=debug)
@@ -217,7 +217,7 @@ def main() -> int:
             output_json=args.output_json,
             debug=not args.quiet,
         )
-    except (AgentInputError, GrokClientError, OSError, ValueError, ImportError) as exc:
+    except (AgentInputError, GeminiClientError, OSError, ValueError, ImportError) as exc:
         print(f"Agent failed: {exc}")
         return 2
     return 0

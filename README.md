@@ -1,6 +1,6 @@
 # Fake News Verification Agent
 
-A submission-ready **Multi-Step LLM Agent** programming assignment project using the **Grok API** in Python. The agent accepts a news headline, article excerpt, or viral claim and verifies its credibility through a visible, multi-stage reasoning pipeline.
+A submission-ready **Multi-Step LLM Agent** programming assignment project using the **Gemini API** in Python. The agent accepts a news headline, article excerpt, or viral claim and verifies its credibility through a visible, multi-stage reasoning pipeline.
 
 This is **not** a single-prompt chatbot. Each stage reads from and writes to a shared dictionary state object, and later stages explicitly depend on structured outputs from earlier stages.
 
@@ -42,7 +42,7 @@ project/
 │   └── sample_claim.txt
 │
 └── utils/
-    ├── grok_client.py
+    ├── gemini_client.py
     └── state_manager.py
 ```
 
@@ -171,11 +171,11 @@ pip install -r requirements.txt
 Create a `.env` file in the project root:
 
 ```bash
-XAI_API_KEY=your_grok_api_key_here
-GROK_MODEL=grok-3-mini
+GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_MODEL=gemini-2.0-flash
 ```
 
-The code also accepts `GROK_API_KEY` instead of `XAI_API_KEY`.
+The code also accepts `GOOGLE_API_KEY` instead of `GEMINI_API_KEY`.
 
 ## Run Instructions
 
