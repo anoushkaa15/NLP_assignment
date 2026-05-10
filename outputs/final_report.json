@@ -1,5 +1,5 @@
 {
-  "user_input": "Viral posts claim that NASA announced Earth will experience six days of total darkness next month because of a solar storm.\n",
+  "user_input": "Viral posts claim that NASA announced Earth will experience six days of total darkness next month because of a solar storm.",
   "claims": {
     "main_claim": "NASA announced Earth will experience six days of total darkness next month because of a solar storm.",
     "sub_claims": [
@@ -94,7 +94,7 @@
         "claims"
       ],
       "inputs": {
-        "user_input": "Viral posts claim that NASA announced Earth will experience six days of total darkness next month because of a solar storm.\n"
+        "user_input": "Viral posts claim that NASA announced Earth will experience six days of total darkness next month because of a solar storm."
       },
       "outputs": {
         "claims": {
@@ -327,7 +327,7 @@
         "final_report"
       ],
       "inputs": {
-        "user_input": "Viral posts claim that NASA announced Earth will experience six days of total darkness next month because of a solar storm.\n",
+        "user_input": "Viral posts claim that NASA announced Earth will experience six days of total darkness next month because of a solar storm.",
         "claims": {
           "main_claim": "NASA announced Earth will experience six days of total darkness next month because of a solar storm.",
           "sub_claims": [
